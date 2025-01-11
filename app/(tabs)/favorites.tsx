@@ -1,44 +1,38 @@
+import { ThemedView } from '@/components/ThemedView';
 import {
-  Animated,
   FlatList,
-  TouchableOpacity,
   useColorScheme,
   View,
+  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { MainText } from '@/components/text';
-import { ThemedView } from '@/components/ThemedView';
-import { useEffect, useRef, useState } from 'react';
-import { useDashboardStore } from '@/src/store/dashboardStore';
+import { useState, useEffect } from 'react';
 import { HomeResponse } from '@/src/types/homeResponse';
-import { createStyles } from './styles';
 import { AntDesign } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { useDashboardStore } from '@/src/store/dashboardStore';
+import { createStyles } from './styles';
+import { NoResults } from '@/components/noResults';
 
-const MatchCard = ({ match }: { match: HomeResponse }) => {
+const FavoriteMatchCard = ({ match }: { match: HomeResponse }) => {
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme || 'light');
   const colors = Colors[colorScheme || 'light'];
-
-  const { favoriteIds, toggleFavorite } = useDashboardStore();
-
-  const isFavorite = favoriteIds.includes(match.id);
+  const { toggleFavorite } = useDashboardStore();
 
   const handleToggleFavorite = async () => {
     await toggleFavorite(match.id);
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.8} style={styles.matchCard}>
+    <View style={styles.matchCard}>
       <View style={styles.timeContainer}>
         <TouchableOpacity
           onPress={handleToggleFavorite}
           style={styles.starContainer}
         >
-          <AntDesign
-            name={isFavorite ? 'star' : 'staro'}
-            size={25}
-            color={isFavorite ? colors.yellow : colors.grayBorder}
-          />
+          <AntDesign name="star" size={25} color={colors.yellow} />
         </TouchableOpacity>
       </View>
 
@@ -59,46 +53,60 @@ const MatchCard = ({ match }: { match: HomeResponse }) => {
       </View>
 
       <MainText style={styles.minute}>{match.minute}'</MainText>
-    </TouchableOpacity>
+    </View>
   );
 };
 
-export default function HomeScreen() {
-  const { matches, loadFavorites } = useDashboardStore();
-  const fadeAnim = useRef(new Animated.Value(1)).current;
+export default function Favorites() {
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme || 'light');
+  const colors = Colors[colorScheme || 'light'];
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { matches, favoriteIds, loadFavorites } = useDashboardStore();
+
+  const favoriteMatches = matches.filter((match) =>
+    favoriteIds.includes(match.id)
+  );
 
   useEffect(() => {
-    loadFavorites();
+    const initializeFavorites = async () => {
+      setIsLoading(true);
+      await loadFavorites();
+      setIsLoading(false);
+    };
+
+    initializeFavorites();
   }, []);
 
   const renderItem = ({ item }: { item: HomeResponse }) => (
-    <MatchCard match={item} />
+    <FavoriteMatchCard match={item} />
   );
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          opacity: fadeAnim,
-        },
-      ]}
-    >
-      <ThemedView style={styles.content}>
-        <MainText style={styles.title}>
-          Foot
-          <MainText style={styles.titleGreen}>goal</MainText>
-        </MainText>
+    <ThemedView style={styles.content}>
+      <MainText style={styles.title}>
+        Favori
+        <MainText style={styles.titleGreen}>lerim</MainText>
+      </MainText>
+
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : favoriteMatches.length === 0 ? (
+        <View style={styles.loadingContainer}>
+          <NoResults message="Henüz favori maçınız bulunmamaktadır" />
+        </View>
+      ) : (
         <FlatList
-          data={matches}
+          data={favoriteMatches}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
         />
-      </ThemedView>
-    </Animated.View>
+      )}
+    </ThemedView>
   );
 }
