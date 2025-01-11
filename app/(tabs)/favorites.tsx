@@ -13,6 +13,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { useDashboardStore } from '@/src/store/dashboardStore';
 import { createStyles } from './styles';
+import { useTranslation } from 'react-i18next';
 import { NoResults } from '@/components/noResults';
 
 const FavoriteMatchCard = ({ match }: { match: HomeResponse }) => {
@@ -20,7 +21,6 @@ const FavoriteMatchCard = ({ match }: { match: HomeResponse }) => {
   const styles = createStyles(colorScheme || 'light');
   const colors = Colors[colorScheme || 'light'];
   const { toggleFavorite } = useDashboardStore();
-
   const handleToggleFavorite = async () => {
     await toggleFavorite(match.id);
   };
@@ -62,7 +62,7 @@ export default function Favorites() {
   const styles = createStyles(colorScheme || 'light');
   const colors = Colors[colorScheme || 'light'];
   const [isLoading, setIsLoading] = useState(true);
-
+  const { t } = useTranslation();
   const { matches, favoriteIds, loadFavorites } = useDashboardStore();
 
   const favoriteMatches = matches.filter((match) =>
@@ -96,7 +96,7 @@ export default function Favorites() {
         </View>
       ) : favoriteMatches.length === 0 ? (
         <View style={styles.loadingContainer}>
-          <NoResults message="Henüz favori maçınız bulunmamaktadır" />
+          <NoResults message={t('favorites.noResult')} />
         </View>
       ) : (
         <FlatList
