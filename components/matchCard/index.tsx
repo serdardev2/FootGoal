@@ -18,13 +18,8 @@ export const MatchCard = ({ match, type = 'default' }: MatchCardProps) => {
     await toggleFavorite(match.id);
   };
 
-  const CardWrapper = type === 'default' ? TouchableOpacity : View;
-
   return (
-    <CardWrapper
-      style={styles.matchCard}
-      {...(type === 'default' && { activeOpacity: 0.8 })}
-    >
+    <TouchableOpacity activeOpacity={0.8} style={styles.matchCard}>
       <View style={styles.timeContainer}>
         <TouchableOpacity
           onPress={handleToggleFavorite}
@@ -55,6 +50,6 @@ export const MatchCard = ({ match, type = 'default' }: MatchCardProps) => {
       </View>
 
       <MainText style={styles.minute}>{match.minute}'</MainText>
-    </CardWrapper>
+    </TouchableOpacity>
   );
 };
