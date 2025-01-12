@@ -15,47 +15,7 @@ import { useDashboardStore } from '@/src/store/dashboardStore';
 import { createStyles } from './styles';
 import { useTranslation } from 'react-i18next';
 import { NoResults } from '@/components/noResults';
-
-const FavoriteMatchCard = ({ match }: { match: HomeResponse }) => {
-  const colorScheme = useColorScheme();
-  const styles = createStyles(colorScheme || 'light');
-  const colors = Colors[colorScheme || 'light'];
-  const { toggleFavorite } = useDashboardStore();
-  const handleToggleFavorite = async () => {
-    await toggleFavorite(match.id);
-  };
-
-  return (
-    <View style={styles.matchCard}>
-      <View style={styles.timeContainer}>
-        <TouchableOpacity
-          onPress={handleToggleFavorite}
-          style={styles.starContainer}
-        >
-          <AntDesign name="star" size={25} color={colors.yellow} />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.matchInfoContainer}>
-        <View style={styles.teamRow}>
-          <MainText style={styles.teamName} numberOfLines={1}>
-            {match.homeTeam}
-          </MainText>
-          <MainText style={styles.score}>{match.homeScore}</MainText>
-        </View>
-
-        <View style={styles.teamRow}>
-          <MainText style={styles.teamName} numberOfLines={1}>
-            {match.awayTeam}
-          </MainText>
-          <MainText style={styles.score}>{match.awayScore}</MainText>
-        </View>
-      </View>
-
-      <MainText style={styles.minute}>{match.minute}'</MainText>
-    </View>
-  );
-};
+import { MatchCard } from '@/components/matchCard';
 
 export default function Favorites() {
   const colorScheme = useColorScheme();
@@ -80,7 +40,7 @@ export default function Favorites() {
   }, []);
 
   const renderItem = ({ item }: { item: HomeResponse }) => (
-    <FavoriteMatchCard match={item} />
+    <MatchCard type="favorite" match={item} />
   );
 
   return (
