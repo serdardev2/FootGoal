@@ -5,4 +5,8 @@ export interface HomeResponse {
   awayTeam: string;
   awayScore: number;
   minute: number;
+  isHomeGoal: boolean;
+  isAwayGoal: boolean;
+  isHomeBigChange: boolean;
+  isAwayBigChange: boolean;
 }

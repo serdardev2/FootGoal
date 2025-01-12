@@ -1,7 +1,11 @@
 {
   "language": "Dil",
 
-  "dashboard": {},
+  "dashboard": {
+    "title": "Pano",
+    "welcome": "Pano'ya hoş geldiniz",
+    "noResult": "Karşılaşma bulunamadı"
+  },
   "favorites": {
     "noResult": "Favori karşılaşma bulunamadı"
   }

@@ -13,6 +13,8 @@ import { HomeResponse } from '@/src/types/homeResponse';
 import { createStyles } from './styles';
 import { AntDesign } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { NoResults } from '@/components/noResults';
+import { useTranslation } from 'react-i18next';
 
 const MatchCard = ({ match }: { match: HomeResponse }) => {
   const colorScheme = useColorScheme();
@@ -68,6 +70,7 @@ export default function HomeScreen() {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme || 'light');
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadFavorites();
@@ -91,13 +94,22 @@ export default function HomeScreen() {
           Foot
           <MainText style={styles.titleGreen}>goal</MainText>
         </MainText>
-        <FlatList
-          data={matches}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-        />
+
+        {matches.length === 0 ? (
+          <View style={styles.loadingContainer}>
+            <NoResults message={t('dashboard.noResult')} />
+          </View>
+        ) : (
+          <FlatList
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            data={matches}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.listContainer}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </ThemedView>
     </Animated.View>
   );

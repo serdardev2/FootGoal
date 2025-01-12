@@ -1,7 +1,11 @@
 {
   "language": "Language",
 
-  "dashboard": {},
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome to the dashboard",
+    "noResult": "No match found"
+  },
   "favorites": {
     "noResult": "No favorite match found"
   }
